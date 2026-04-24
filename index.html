@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapas Collection — Portfolio Premium</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
+
+  <!-- Leaflet CSS (for world map) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- ╔══════════════════════════════════════╗ -->
+  <!-- ║           LOADING SCREEN             ║ -->
+  <!-- ╚══════════════════════════════════════╝ -->
+  <div id="loader">
+    <div class="loader-inner">
+      <div class="loader-cap">
+        <div class="cap-rim"></div>
+        <div class="cap-text">C</div>
+      </div>
+      <div class="loader-title">Chapas</div>
+      <div class="loader-bar"><div class="loader-fill"></div></div>
+      <div class="loader-subtitle">Cargando colección…</div>
+    </div>
+  </div>
+
+  <!-- ╔══════════════════════════════════════╗ -->
+  <!-- ║              NAV BAR                 ║ -->
+  <!-- ╚══════════════════════════════════════╝ -->
+  <header id="navbar">
+    <div class="nav-inner">
+      <a class="nav-logo" href="#hero">
+        <span class="logo-icon">⬡</span>
+        <span class="logo-text">Chapas<em>Collection</em></span>
+      </a>
+      <nav class="nav-links">
+        <a href="#española1">Española I</a>
+        <a href="#española2">Española II</a>
+        <a href="#internacional">Internacional</a>
+        <a href="#mapa">Mapa</a>
+      </nav>
+      <div class="nav-search-wrap">
+        <input id="global-search" type="text" placeholder="Buscar chapa…" autocomplete="off" />
+        <span class="search-icon">⌕</span>
+      </div>
+      <button class="nav-burger" id="burger" aria-label="Menú">&#9776;</button>
+    </div>
+  </header>
+
+  <!-- ╔══════════════════════════════════════╗ -->
+  <!-- ║              HERO                    ║ -->
+  <!-- ╚══════════════════════════════════════╝ -->
+  <section id="hero">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-content">
+      <p class="hero-eyebrow">— Una pasión hecha colección —</p>
+      <h1 class="hero-title">
+        <span class="hero-line1">Chapas del</span>
+        <span class="hero-line2">Mundo</span>
+      </h1>
+      <p class="hero-desc">
+        336 chapas únicas de más de 40 países, organizadas en tres colecciones exclusivas.
+        Haz hover o clic sobre cada pieza para explorar su historia.
+      </p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num" data-target="336">0</span><span class="stat-label">chapas</span></div>
+        <div class="stat"><span class="stat-num" data-target="40">0</span><span class="stat-label">países</span></div>
+        <div class="stat"><span class="stat-num" data-target="3">0</span><span class="stat-label">colecciones</span></div>
+      </div>
+      <a class="hero-cta" href="#española1">Explorar colección ↓</a>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ╔══════════════════════════════════════╗ -->
+  <!-- ║         SEARCH RESULTS OVERLAY       ║ -->
+  <!-- ╚══════════════════════════════════════╝ -->
+  <div id="search-results" class="search-results hidden"></div>
+
+  <!-- ╔══════════════════════════════════════╗ -->
+  <!-- ║       FILTER BAR (above grids)       ║ -->
+  <!-- ╚══════════════════════════════════════╝ -->
+  <div class="filter-bar" id="filter-bar">
+    <div class="filter-inner">
+      <span class="filter-label">Filtrar por país:</span>
+      <div class="filter-pills" id="filter-pills">
+        <button class="pill active" data-country="all">Todos</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ╔══════════════════════════════════════╗ -->
+  <!-- ║       SPANISH COLLECTION 1           ║ -->
+  <!-- ╚══════════════════════════════════════╝ -->
+  <section class="collection-section" id="española1">
+    <div class="section-header">
+      <div class="section-badge">Colección 01</div>
+      <h2 class="section-title">Colección <span>Española I</span></h2>
+      <p class="section-subtitle">112 chapas · 14 columnas × 8 filas</p>
+    </div>
+    <div class="grid-container" id="grid-spanish1" data-collection="spanish1">
+      <!-- Caps rendered by JS -->
+    </div>
+  </section>
+
+  <!-- ╔══════════════════════════════════════╗ -->
+  <!-- ║       SPANISH COLLECTION 2           ║ -->
+  <!-- ╚══════════════════════════════════════╝ -->
+  <section class="collection-section" id="española2">
+    <div class="section-header">
+      <div class="section-badge">Colección 02</div>
+      <h2 class="section-title">Colección <span>Española II</span></h2>
+      <p class="section-subtitle">112 chapas · 14 columnas × 8 filas</p>
+    </div>
+    <div class="grid-container" id="grid-spanish2" data-collection="spanish2">
+    </div>
+  </section>
+
+  <!-- ╔══════════════════════════════════════╗ -->
+  <!-- ║       INTERNATIONAL COLLECTION       ║ -->
+  <!-- ╚══════════════════════════════════════╝ -->
+  <section class="collection-section" id="internacional">
+    <div class="section-header">
+      <div class="section-badge">Colección 03</div>
+      <h2 class="section-title">Colección <span>Internacional</span></h2>
+      <p class="section-subtitle">112 chapas · 14 columnas × 8 filas</p>
+    </div>
+    <div class="grid-container" id="grid-international" data-collection="international">
+    </div>
+  </section>
+
+  <!-- ╔══════════════════════════════════════╗ -->
+  <!-- ║       WORLD MAP SECTION              ║ -->
+  <!-- ╚══════════════════════════════════════╝ -->
+  <section class="map-section" id="mapa">
+    <div class="section-header">
+      <div class="section-badge">Mapa</div>
+      <h2 class="section-title">Origen de las <span>Chapas</span></h2>
+      <p class="section-subtitle">Explora de dónde viene cada chapa de la colección internacional</p>
+    </div>
+    <div class="map-wrap">
+      <div id="world-map"></div>
+      <div class="map-legend">
+        <div class="legend-title">Marcadores</div>
+        <div class="legend-item"><span class="legend-dot"></span>Origen de chapa</div>
+        <div class="legend-count" id="legend-count">0 ubicaciones</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ╔══════════════════════════════════════╗ -->
+  <!-- ║           FOOTER                     ║ -->
+  <!-- ╚══════════════════════════════════════╝ -->
+  <footer id="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <span class="logo-icon">⬡</span>
+        <span>ChapasCollection</span>
+      </div>
+      <p class="footer-tagline">Cada chapa cuenta una historia</p>
+      <p class="footer-copy">© 2025 — Colección personal de chapas</p>
+    </div>
+  </footer>
+
+  <!-- ╔══════════════════════════════════════╗ -->
+  <!-- ║           CAP DETAIL MODAL           ║ -->
+  <!-- ╚══════════════════════════════════════╝ -->
+  <div id="cap-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Detalle de chapa">
+    <div class="modal-backdrop"></div>
+    <div class="modal-panel">
+      <button class="modal-close" id="modal-close" aria-label="Cerrar">✕</button>
+      <div class="modal-body">
+        <!-- 3D canvas side -->
+        <div class="modal-3d-side">
+          <canvas id="modal-canvas"></canvas>
+          <div class="modal-3d-hint">Arrastra para rotar · Rueda para zoom</div>
+        </div>
+        <!-- Info side -->
+        <div class="modal-info-side">
+          <div class="modal-badge" id="m-badge">España</div>
+          <h2 class="modal-name" id="m-name">Nombre</h2>
+          <div class="modal-meta">
+            <div class="meta-row">
+              <span class="meta-key">Marca</span>
+              <span class="meta-val" id="m-brand">—</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-key">País</span>
+              <span class="meta-val" id="m-country">—</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-key">Año</span>
+              <span class="meta-val" id="m-year">—</span>
+            </div>
+          </div>
+          <p class="modal-desc" id="m-desc">Descripción de la chapa.</p>
+          <div class="modal-color-strip" id="m-color-strip"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ╔══════════════════════════════════════╗ -->
+  <!-- ║        TOOLTIP (hover)               ║ -->
+  <!-- ╚══════════════════════════════════════╝ -->
+  <div id="cap-tooltip" class="cap-tooltip hidden">
+    <canvas id="tooltip-canvas" width="80" height="80"></canvas>
+    <div class="tooltip-info">
+      <span class="tooltip-name" id="tt-name"></span>
+      <span class="tooltip-brand" id="tt-brand"></span>
+    </div>
+  </div>
+
+  <!-- ╔══════════════════════════════════════╗ -->
+  <!-- ║            SCRIPTS                   ║ -->
+  <!-- ╚══════════════════════════════════════╝ -->
+  <!-- Data -->
+  <script src="data/caps.js"></script>
+
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- App scripts -->
+  <script src="js/caps3d.js"></script>
+  <script src="js/grid.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
