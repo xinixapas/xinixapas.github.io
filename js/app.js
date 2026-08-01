@@ -186,11 +186,15 @@
     button.dataset.country = cap.country;
     button.dataset.year = cap.year;
     button.dataset.search = `${cap.name} ${cap.brand} ${cap.country} ${cap.year} ${cap.description}`.toLowerCase();
-    button.dataset.short = shortLabel(cap.name);
     button.style.setProperty("--cap-color", cap.color || "#777");
     button.style.setProperty("--cap-light", lighten(cap.color || "#777", 46));
     button.style.setProperty("--cap-text", cap.textColor || "#fff");
     button.setAttribute("aria-label", `${cap.name}, ${cap.brand}, ${cap.country}`);
+    const image = document.createElement("img");
+    image.src = `assets/caps/${cap.id}.png`;
+    image.alt = "";
+    image.decoding = "async";
+    button.append(image);
 
     button.addEventListener("pointerdown", (event) => startDrag(event, cap, rackKey, index));
     button.addEventListener("click", (event) => {
@@ -373,10 +377,10 @@
     document.getElementById("dialog-rack").textContent = rackTitle(rackKey);
 
     const capArt = document.getElementById("dialog-cap");
-    capArt.dataset.label = shortLabel(cap.name);
     capArt.style.setProperty("--cap-color", cap.color || "#777");
     capArt.style.setProperty("--cap-light", lighten(cap.color || "#777", 48));
     capArt.style.setProperty("--cap-text", cap.textColor || "#fff");
+    capArt.style.backgroundImage = `url("assets/caps/${cap.id}.png")`;
 
     els.dialog.showModal();
   }
