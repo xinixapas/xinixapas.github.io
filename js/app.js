@@ -10,7 +10,8 @@
     layout: {},
     filters: { query: "", country: "all", year: "all" },
     editMode: false,
-    drag: null
+    drag: null,
+    model: { dragging: false, x: 18, y: -18, z: -8, pointerX: 0, pointerY: 0 }
   };
 
   const els = {};
@@ -40,6 +41,7 @@
     els.import = document.getElementById("import-layout");
     els.dialog = document.getElementById("cap-dialog");
     els.closeDialog = document.getElementById("dialog-close");
+    els.capModel = document.getElementById("cap-model");
     els.toast = document.getElementById("toast");
   }
 
@@ -209,14 +211,6 @@
     return button;
   }
 
-  function shortLabel(name) {
-    const clean = String(name).trim();
-    if (clean.length <= 10) return clean;
-    const words = clean.split(/\s+/);
-    if (words.length > 1 && words[0].length <= 9) return words[0];
-    return `${clean.slice(0, 8)}.`;
-  }
-
   function filledSlots(rackKey) {
     return state.layout[rackKey].filter(Boolean).length;
   }
@@ -243,6 +237,7 @@
     els.export.addEventListener("click", exportLayout);
     els.import.addEventListener("change", importLayout);
     els.closeDialog.addEventListener("click", () => els.dialog.close());
+    els.capModel.addEventListener("pointerdown", startModelRotate);
     els.dialog.addEventListener("click", (event) => {
       const rect = els.dialog.getBoundingClientRect();
       const outside = event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom;
@@ -375,14 +370,52 @@
     document.getElementById("dialog-position").textContent = `${rackTitle(rackKey)}, hueco ${index + 1}`;
     document.getElementById("dialog-note").textContent = cap.description || "Sin nota adicional.";
     document.getElementById("dialog-rack").textContent = rackTitle(rackKey);
+    document.getElementById("dialog-reference").textContent = referenceLabel(cap);
 
-    const capArt = document.getElementById("dialog-cap");
-    capArt.style.setProperty("--cap-color", cap.color || "#777");
-    capArt.style.setProperty("--cap-light", lighten(cap.color || "#777", 48));
-    capArt.style.setProperty("--cap-text", cap.textColor || "#fff");
-    capArt.style.backgroundImage = `url("assets/caps/${cap.id}.png")`;
+    els.capModel.style.setProperty("--model-color", cap.color || "#777");
+    els.capModel.style.setProperty("--model-image", `url("../assets/caps/${cap.id}.png")`);
+    state.model.x = 18;
+    state.model.y = -18;
+    state.model.z = -8;
+    updateModelTransform();
 
     els.dialog.showModal();
+  }
+
+  function referenceLabel(cap) {
+    if (cap.referenceStatus === "verified") return "Referencia web verificada";
+    if (cap.referenceStatus === "manual") return "Textura cargada manualmente";
+    return "Referencia web pendiente";
+  }
+
+  function startModelRotate(event) {
+    state.model.dragging = true;
+    state.model.pointerX = event.clientX;
+    state.model.pointerY = event.clientY;
+    els.capModel.setPointerCapture(event.pointerId);
+    els.capModel.addEventListener("pointermove", rotateModel);
+    els.capModel.addEventListener("pointerup", stopModelRotate, { once: true });
+    els.capModel.addEventListener("pointercancel", stopModelRotate, { once: true });
+  }
+
+  function rotateModel(event) {
+    if (!state.model.dragging) return;
+    const dx = event.clientX - state.model.pointerX;
+    const dy = event.clientY - state.model.pointerY;
+    state.model.y = Math.max(-58, Math.min(58, state.model.y + dx * 0.32));
+    state.model.x = Math.max(-8, Math.min(62, state.model.x - dy * 0.22));
+    state.model.pointerX = event.clientX;
+    state.model.pointerY = event.clientY;
+    updateModelTransform();
+  }
+
+  function stopModelRotate() {
+    state.model.dragging = false;
+    els.capModel.removeEventListener("pointermove", rotateModel);
+  }
+
+  function updateModelTransform() {
+    els.capModel.style.transform = `rotateX(${state.model.x}deg) rotateY(${state.model.y}deg) rotateZ(${state.model.z}deg)`;
   }
 
   function rackTitle(rackKey) {
